@@ -14,11 +14,11 @@ public class Main {
         list.add(0, 10);               //add number at index
         System.out.println(list);
 
-        System.out.println("Size of ArrayList:");
-        System.out.println(list.size());            //Size
-
         System.out.println("Get index 1:");
         System.out.println(list.get(1));            //get index 1
+
+        System.out.println("Size of ArrayList:");
+        System.out.println(list.size());            //Size
 
         System.out.println("Remove index 0:");
         list.remove(0);                      //remove index 0
