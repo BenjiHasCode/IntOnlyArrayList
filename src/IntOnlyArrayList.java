@@ -1,72 +1,38 @@
 public class IntOnlyArrayList {
-    private Integer[] array;
+    private int[] array;
+    private int size;
 
     //Constructor
     public IntOnlyArrayList() {
-        array = new Integer[2]; //Hvor stort skal vores array være?
-    }
-
-    //Returns number of elements
-    public int size() {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == null) {
-                return i; //0 based so if we return first occurrence of null, then we return the number of elements (last index 34, size = 35)
-            }
-        }
-        return array.length; //else return length of array (every space could be occupied
+        array = new int[2];
+        size = 0;
     }
 
     //Adds to end of list
     public void add(int value) {
-        //If last index is filled = enlarge
+        //check if array is big enough
         checkArrayIncrease();
-        //size returns the number of elements, and since its 0 based, the size must be the next empty index
-        array[size()] = value;
+        array[size()] = value; //size will always +1 of our last index, so we just add the next element there
+        size++;
     }
 
     //Adds at designated index
     public void add(int index, int value) {
-        if (index > size() || index < 0) { //man kunne sige index >= size(), men ved kun at sige > så kan vi også tilføje til slutningen af listen. Hvorfor man ikke bare bruger den anden metode vil jeg ikke vide.
+        if (index > size() || index < 0) {          //man kunne sige index >= size(), men ved kun at sige > så kan vi også tilføje til slutningen af listen.
             throw new IndexOutOfBoundsException();
         } else {
-            //Checks if we need to increase our array
+            //check array length
             checkArrayIncrease();
-            for (int i = array.length - 1; i > index; i--) {
+            for (int i = size; i > index; i--) {
                 //We start shuffling the elements in the end of the list
-                if (array[i - 1] != null) {
-                    array[i] = array[i - 1]; //we shuffle it to the right
-                }
-                //if the next index (i is decrementing) is the one we want to add to -> assign it the value
+                array[i] = array[i - 1];
+                //if next is index, assign value
                 if (i - 1 == index) {
                     array[i - 1] = value;
                 }
             }
         }
-    }
-
-    //removes from index, shuffling everything into place
-    public void remove(int index) {
-        if (index >= size() || index < 0) {
-            throw new IndexOutOfBoundsException();
-        } else {
-            //if index is last - set null
-            if (index == array.length - 1){
-                array[index] = null;
-            }else{
-                for (int i = index + 1; i < array.length ; i++) {
-                    if (array[i] != null) { //if current (one to right of delete index) isnt empty -> shuffle left
-                        array[i - 1] = array[i]; //index left gets current value thus "deleting" our designated index
-                        array[i] = null;
-                    }
-                }
-            }
-            checkArrayDecrease(); //Check if we can make the array smaller
-        }
-    }
-
-    //Empties arraylist by creating a new one.
-    public void clear() {
-        array = new Integer[2];
+        size++;
     }
 
     //Returns value of index
@@ -79,6 +45,31 @@ public class IntOnlyArrayList {
         }
     }
 
+    //removes from index, shuffling everything into place
+    public void remove(int index) {
+        if (index >= size || index < 0) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            for (int i = index; i < size ; i++) {
+                    array[i] = array[i+1];
+            }
+        }
+    size--;
+    checkArrayDecrease();
+    }
+
+    //Returns number of elements
+    public int size() {
+      return size;
+    }
+
+
+    //Empties arraylist by creating a new one.
+    public void clear() {
+        array = new int[2];
+        size = 0;
+    }
+
     //Prints our arraylist
     public String toString() {
         if (array == null || size() == 0) {
@@ -86,10 +77,8 @@ public class IntOnlyArrayList {
         } else {
             String result = "[" + array[0];
 
-            for (int i = 1; i < array.length; i++) {
-                if (array[i] != null) {
+            for (int i = 1; i < size; i++) {
                     result += ", " + array[i];
-                }
             }
             result += "]";
             return result;
@@ -98,25 +87,26 @@ public class IntOnlyArrayList {
 
     //Checks if we need to increase our array size
     private void checkArrayIncrease() {
-        if (array.length < 1){          //If array is size 0, make new one
-            array = new Integer[2];
+        if (array.length < 1){
+            array = new int[2];
         }
-        else if (array[array.length - 1] != null) {
-            Integer[] newArray = new Integer[array.length * 2];
-
-            //Copy from array to newArray. copy amount of elements fitting with array.length
-            System.arraycopy(array, 0, newArray, 0, array.length);
+        //if length and size(number of elements) are equal, then the array is full and we need to enlarge it
+        else if (array.length == size) {
+            //we'll just double the size (maybe a better solution would be to increase by certain amount (doubling could end with a gigantic array))
+            int[] newArray = new int[array.length * 2];
+            //Copy from array to newArray
+            System.arraycopy(array, 0, newArray, 0, size);
             array = newArray;
         }
     }
 
     //checks if we can decrease our array size
     private void checkArrayDecrease() {
-        if (array[array.length / 2] == null) {    //If half the array is empty. Make a smaller one
-            Integer[] newArray = new Integer[array.length / 2 ];
+        if (array.length/2 > size) {    //If half the array is empty. Make a smaller one
+            int[] newArray = new int[array.length / 2 ];
 
             //Copy array
-            System.arraycopy(array, 0, newArray, 0, array.length / 2);
+            System.arraycopy(array, 0, newArray, 0, size);
             array = newArray;
         }
     }
