@@ -72,7 +72,7 @@ public class IntOnlyArrayList {
 
     //Prints our arraylist
     public String toString() {
-        if (array == null || size() == 0) {
+        if (size == 0) {
             return "[]";
         } else {
             String result = "[" + array[0];
